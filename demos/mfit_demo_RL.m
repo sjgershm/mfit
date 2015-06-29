@@ -47,23 +47,25 @@ results(2) = mfit_optimize(@rllik2,param,data,nstarts);
 
 r = corr(results(1).x(:),x(:));
 disp(['Correlation between true and estimated parameters: ',num2str(r)]);
-subplot(2,2,1);
+figure;
 plot(results(1).x(:),x(:),'+k','MarkerSize',12,'LineWidth',4);
 h = lsline; set(h,'LineWidth',4);
 set(gca,'FontSize',25);
 xlabel('Estimate','FontSize',25);
 ylabel('Ground truth','FontSize',25);
 
-[alpha,exp_r,xp,pxp,bor] = mfit_bms(results);
-subplot(2,2,2);
-bar(xp); colormap bone;
-set(gca,'XTickLabel',{'Model 1' 'Model 2'},'FontSize',25,'YLim',[0 1]);
-ylabel('Exceedance probability','FontSize',25);
-title('Bayesian model comparison','FontSize',25);
+if exist('spm_bms.m')
+    [alpha,exp_r,xp,pxp,bor] = mfit_bms(results);
+    figure;
+    bar(xp); colormap bone;
+    set(gca,'XTickLabel',{'Model 1' 'Model 2'},'FontSize',25,'YLim',[0 1]);
+    ylabel('Exceedance probability','FontSize',25);
+    title('Bayesian model comparison','FontSize',25);
+end
 
 logp(:,1) = mfit_predict(testdata,results(1));
 logp(:,2) = mfit_predict(testdata,results(2));
-subplot(2,2,3);
+figure;
 d = logp(:,1)-logp(:,2);
 m = mean(d);
 se = std(d)/sqrt(S);
