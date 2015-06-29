@@ -2,6 +2,7 @@
 % Two models are compared:
 %   Model 1: single learning rate (and inverse temperature)
 %   Model 2: separate learning rates for positive and negative prediction errors
+% Ground-truth data are generated from Model 1.
 
 % ---------- generate simulated data ----------%
 
