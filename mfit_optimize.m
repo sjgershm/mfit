@@ -2,13 +2,13 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     
     % Find maximum a posteriori parameter estimates.
     %
-    % USAGE: results = mfit_optimize(likfun,param,data,[opts])
+    % USAGE: results = mfit_optimize(likfun,param,data,[nstarts])
     %
     % INPUTS:
     %   likfun - likelihood function handle
     %   param - [K x 1] parameter structure
     %   data - [S x 1] data structure
-    %   nstarts - number of random starts
+    %   nstarts (optional) - number of random starts (default: 5)
     %
     % OUTPUTS:
     %   results - structure with the following fields:
