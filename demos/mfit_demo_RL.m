@@ -24,9 +24,9 @@ end
 % create parameter structure
 mu = 5; % mean of exponential prior
 param(1).name = 'inverse temperature';
-param(1).logpdf = @(x) sum(log(exppdf(x,mu)));
-param(1).lb = 0;
-param(1).ub = 50;
+param(1).logpdf = @(x) sum(log(exppdf(x,mu)));  % log density function for prior
+param(1).lb = 0;    % lower bound
+param(1).ub = 50;   % upper bound
 
 a = 1.2; b = 1.2;   % parameters of beta prior
 param(2).name = 'learning rate';
