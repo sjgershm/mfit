@@ -44,6 +44,10 @@ results(1) = mfit_optimize(@rllik,param(1:2),data,nstarts);
 disp('... Fitting model 2');
 results(2) = mfit_optimize(@rllik2,param,data,nstarts);
 
+% compute predictive probability for the two models on test data
+logp(:,1) = mfit_predict(testdata,results(1));
+logp(:,2) = mfit_predict(testdata,results(2));
+
 %-------- plot results -----------%
 
 r = corr(results(1).x(:),x(:));
@@ -64,8 +68,6 @@ if exist('spm_bms.m')
     title('Bayesian model comparison','FontSize',25);
 end
 
-logp(:,1) = mfit_predict(testdata,results(1));
-logp(:,2) = mfit_predict(testdata,results(2));
 figure;
 d = logp(:,1)-logp(:,2);
 m = mean(d);
@@ -73,5 +75,5 @@ se = std(d)/sqrt(S);
 errorbar(m,se,'ok','MarkerFaceColor','k','MarkerSize',12,'LineWidth',4);
 set(gca,'YLim',[-1 max(d)+1],'XLim',[0.5 1.5],'XTick',1,'XTickLabel',{'Model 1 vs. Model 2'},'FontSize',25);
 ylabel('Relative log predictive prob.','FontSize',25);
-hold on; plot([0.5 1.5],[0 0],'--r','LineWidth',3);
+hold on; plot([0.5 1.5],[0 0],'--r','LineWidth',3); % red line shows chance performance
 title('Cross-validation','FontSize',25);
