@@ -23,6 +23,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     % fill in missing options
     if nargin < 4 || isempty(nstarts); nstarts = 5; end
     K = length(param);
+    results.K = K;
     
     % save info to results structure
     results.param = param;
@@ -58,16 +59,3 @@ function results = mfit_optimize(likfun,param,data,nstarts)
         results.bic(s,1) = K*log(data(s).N) - 2*results.logpost(s);
         results.aic(s,1) = K*2 - 2*results.logpost(s);
     end
-    
-end
-
-function logp = mfit_post(x,param,data,likfun)
-    
-    % Evaluate log probability of parameters under the (unnormalized) posterior.
-
-    logp = likfun(x,data);
-    
-    for k = 1:length(param)
-        logp = logp + param(k).logpdf(x(:,k));
-    end
-end

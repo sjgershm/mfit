@@ -1,7 +1,9 @@
 function [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
     
-    % Bayesian model selection for group studies. Requires SPM. See
-    % spm_bms.m for more information.
+    % Bayesian model selection for group studies. Uses the Laplace
+    % approximation to the marginal likelihood. If the Hessian is
+    % degenerate, it resorts to the Bayesian information criterion.
+    % See bms.m for more information.
     %
     % USAGE: [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
     %
@@ -26,7 +28,13 @@ function [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
     % Sam Gershman, June 2015
     
     for j = 1:length(results)
-        lme(:,j) = -0.5*results(j).bic;
+        lme0(:,j) = -0.5*(results(j).bic - results(j).K*log(2*pi));
+        for s = 1:length(results(j).H); h(s,1) = log(det(results(j).H{s})); end
+        lme(:,j) = results(j).logpost' + 0.5*(results(j).K*log(2*pi) - h);
+        ix = isnan(lme)|isinf(lme); % use BIC if Hessian is degenerate
+        if any(ix)
+            lme(ix) = lme0;
+        end
     end
     
-    [alpha,exp_r,xp,pxp,bor] = spm_BMS(lme);
+    [alpha,exp_r,xp,pxp,bor] = bms(lme);

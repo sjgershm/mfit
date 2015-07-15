@@ -31,7 +31,7 @@ function lik = rllik2(x,data)
         r = data.r(n);
         lik = lik + b*v(c) - logsumexp(b*v,2);
         rpe = r-v(c);
-        if rpe < 0
+        if rpe <= 0
             v(c) = v(c) + lr_neg*rpe;   % update values (negative prediction error)
         else
             v(c) = v(c) + lr_pos*rpe;   % update values (positive prediction error)
