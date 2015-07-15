@@ -29,7 +29,7 @@ Here "logpdf" takes as input a parameter (or multiple parameters, in the case of
 
 results = mfit_optimize(@fun,param,data,nstarts)
 
-Here @rllik is a function handle for your log-likelihood function, which takes the following form:
+Here @fun is a function handle for your log-likelihood function, which takes the following form:
 
 lik = fun(x,data,options)
 
