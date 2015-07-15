@@ -23,7 +23,7 @@ end
 % ------------ fit models --------------------%
 
 % create parameter structure
-g = [2 1];  % parameters of the gamma prior
+g = [1 5];  % parameters of the gamma prior
 param(1).name = 'inverse temperature';
 param(1).logpdf = @(x) sum(log(gampdf(x,g(1),g(2))));  % log density function for prior
 param(1).lb = 0;    % lower bound
