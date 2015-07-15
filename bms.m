@@ -90,7 +90,7 @@ function [alpha,exp_r,xp,pxp,bor] = bms(lme)
         xp(2) = bcdf(0.5,alpha(1),alpha(2));
     else
         % comparison of >2 models: use sampling approach
-        xp = dirichlet_exceedance(alpha,Nsamp);
+        xp = dirichlet_exceedance(alpha);
     end
     
     posterior.a=alpha;
