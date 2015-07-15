@@ -19,7 +19,8 @@ function lik = rllik2(x,data)
     %
     % Sam Gershman, June 2015
     
-    v = [0 0];  % initial values
+    C = max(unique(data.c)); % number of options
+    v = zeros(1,C);  % initial values
     lik = 0;
     b = x(1);
     lr_pos = x(2);

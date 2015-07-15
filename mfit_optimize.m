@@ -16,6 +16,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     %               .logpost - [S x 1] log posterior
     %               .bic - [S x 1] Bayesian information criterion
     %               .aic - [S x 1] Akaike information criterion
+    %               .H - [S x 1] cell array of Hessian matrices
     %
     % Sam Gershman, June 2015
     
@@ -45,11 +46,12 @@ function results = mfit_optimize(likfun,param,data,nstarts)
             for k = 1:K
                 x0(k) = unifrnd(param(k).lb,param(k).ub);
             end
-            [x,nlogp] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
+            [x,nlogp,~,~,~,~,H] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
             logp = -nlogp;
             if i == 1 || results.logpost(s) < logp
                 results.logpost(s) = logp;
                 results.x(s,:) = x;
+                results.H{s} = H;
             end
         end
         
