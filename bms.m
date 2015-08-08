@@ -249,7 +249,7 @@ function xp = dirichlet_exceedance(alpha)
         %----------------------------------------------------------------------
         r = zeros(blk(i),Nk);
         for k = 1:Nk
-            r(:,k) = spm_gamrnd(alpha(k),1,blk(i),1);
+            r(:,k) = gamrnd(alpha(k),1,blk(i),1);
         end
         sr = sum(r,2);
         for k = 1:Nk
