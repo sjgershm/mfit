@@ -36,7 +36,7 @@ function bms_results = mfit_bms(results)
     
     ix = isnan(lme)|isinf(lme); % use BIC if Hessian is degenerate
     if any(ix)
-        lme(ix) = lme0;
+        lme(ix) = lme0(ix);
     end
 
     lme(any(isnan(lme)|isinf(lme),2),:) = [];
