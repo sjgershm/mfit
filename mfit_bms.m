@@ -31,10 +31,13 @@ function [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
         lme0(:,j) = -0.5*(results(j).bic - results(j).K*log(2*pi));
         for s = 1:length(results(j).H); h(s,1) = log(det(results(j).H{s})); end
         lme(:,j) = results(j).logpost' + 0.5*(results(j).K*log(2*pi) - h);
-        ix = isnan(lme)|isinf(lme); % use BIC if Hessian is degenerate
-        if any(ix)
-            lme(ix) = lme0;
-        end
     end
+    
+    ix = isnan(lme)|isinf(lme); % use BIC if Hessian is degenerate
+    if any(ix)
+        lme(ix) = lme0;
+    end
+
+    lme(any(isnan(lme)|isinf(lme),2),:) = [];
     
     [alpha,exp_r,xp,pxp,bor] = bms(lme);
