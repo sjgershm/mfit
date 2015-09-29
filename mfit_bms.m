@@ -1,21 +1,22 @@
-function [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
+function bms_results = mfit_bms(results)
     
     % Bayesian model selection for group studies. Uses the Laplace
     % approximation to the marginal likelihood. If the Hessian is
     % degenerate, it resorts to the Bayesian information criterion.
     % See bms.m for more information.
     %
-    % USAGE: [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
+    % USAGE: bms_results = mfit_bms(results)
     %
     % INPUTS:
     %   results - [J x 1] results structure, where J is the number of models
     %
     % OUTPUTS:
-    %   alpha   - vector of model probabilities
-    %   exp_r   - expectation of the posterior p(r|y)
-    %   xp      - exceedance probabilities
-    %   pxp     - protected exceedance probabilities
-    %   bor     - Bayes Omnibus Risk (probability that model frequencies are equal)
+    %   bms_results - structure with the following fields:
+    %       .alpha   - vector of model probabilities
+    %       .exp_r   - expectation of the posterior p(r|y)
+    %       .xp      - exceedance probabilities
+    %       .pxp     - protected exceedance probabilities
+    %       .bor     - Bayes Omnibus Risk (probability that model frequencies are equal)
     %
     % REFERENCES:
     %   Stephan KE, Penny WD, Daunizeau J, Moran RJ, Friston KJ (2009)
@@ -40,4 +41,4 @@ function [alpha,exp_r,xp,pxp,bor] = mfit_bms(results)
 
     lme(any(isnan(lme)|isinf(lme),2),:) = [];
     
-    [alpha,exp_r,xp,pxp,bor] = bms(lme);
+    [bms_results.alpha, bms_results.exp_r, bms_results.xp, bms_results.pxp, bms_results.bor] = bms(lme);

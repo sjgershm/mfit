@@ -1,8 +1,8 @@
-function [logp,results] = mfit_crossval(likfun,param,folds,nstarts)
+function [logp, results] = mfit_crossval(likfun,param,folds,nstarts)
     
     % Cross-validation.
     %
-    % USAGE: logp = mfit_crossval(likfun,param,folds,[nstarts])
+    % USAGE: [logp, results] = mfit_crossval(likfun,param,folds,[nstarts])
     %
     % INPUTS:
     %   likfun - likelihood function handle
@@ -14,6 +14,7 @@ function [logp,results] = mfit_crossval(likfun,param,folds,nstarts)
     %
     % OUTPUTS:
     %   logp - [S x F] log predictive probabilities for each subject and fold
+    %   results - results structure from optimization
     %
     % Sam Gershman, Sep 2015
     
