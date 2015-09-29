@@ -16,5 +16,6 @@ function param = mfit_priorfit(x,param)
     % Sam Gershman, Sep 2015
     
     for i = 1:length(param)
+        x(:,i) = min(max(x(:,i),param(i).lb),param(i).ub);
         param(i).hp = param(i).fit(x(:,i));
     end
