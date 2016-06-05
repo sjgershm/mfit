@@ -24,6 +24,7 @@ function opts = factorial_models(Opts)
     for m = 1:size(g,2)
         for f = 1:length(F)
             opts(m).(F{f}) = g(f,m);
+            if iscell(opts(m).(F{f})) && length(opts(m).(F{f}))==1; opts(m).(F{f}) = opts(m).(F{f}){1}; end
         end
     end
 end
