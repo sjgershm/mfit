@@ -14,6 +14,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     %   results - structure with the following fields:
     %               .x - [S x K] parameter estimates
     %               .logpost - [S x 1] log posterior
+    %               .loglik - [S x 1] log likelihood
     %               .bic - [S x 1] Bayesian information criterion
     %               .aic - [S x 1] Akaike information criterion
     %               .H - [S x 1] cell array of Hessian matrices
@@ -51,11 +52,12 @@ function results = mfit_optimize(likfun,param,data,nstarts)
             logp = -nlogp;
             if i == 1 || results.logpost(s) < logp
                 results.logpost(s) = logp;
+                results.loglik(s) = likfun(x,data(s));
                 results.x(s,:) = x;
                 results.H{s} = H;
             end
         end
         
-        results.bic(s,1) = K*log(data(s).N) - 2*results.logpost(s);
-        results.aic(s,1) = K*2 - 2*results.logpost(s);
+        results.bic(s,1) = K*log(data(s).N) - 2*results.loglik(s);
+        results.aic(s,1) = K*2 - 2*results.loglik(s);
     end
