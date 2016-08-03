@@ -18,6 +18,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     %               .bic - [S x 1] Bayesian information criterion
     %               .aic - [S x 1] Akaike information criterion
     %               .H - [S x 1] cell array of Hessian matrices
+    %               .latents - latent variables (only if likfun returns a second argument)
     %
     % Sam Gershman, June 2015
     
@@ -60,4 +61,5 @@ function results = mfit_optimize(likfun,param,data,nstarts)
         
         results.bic(s,1) = K*log(data(s).N) - 2*results.loglik(s);
         results.aic(s,1) = K*2 - 2*results.loglik(s);
+        try [~,results.latents(s)] = likfun(results.x(s,:),data(s)); end
     end
