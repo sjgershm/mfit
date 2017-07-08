@@ -1,14 +1,15 @@
-function bms_results = mfit_bms(results)
+function bms_results = mfit_bms(results,use_bic)
     
     % Bayesian model selection for group studies. Uses the Laplace
     % approximation to the marginal likelihood. If the Hessian is
     % degenerate, it resorts to the Bayesian information criterion.
     % See bms.m for more information.
     %
-    % USAGE: bms_results = mfit_bms(results)
+    % USAGE: bms_results = mfit_bms(results,[use_bic])
     %
     % INPUTS:
     %   results - [J x 1] results structure, where J is the number of models
+    %   use_bic (optional) - use BIC instead of Laplace approximation? (default: 0)
     %
     % OUTPUTS:
     %   bms_results - structure with the following fields:
@@ -28,6 +29,8 @@ function bms_results = mfit_bms(results)
     %
     % Sam Gershman, June 2015
     
+    if nargin < 2; use_bic = 0; end
+    
     for j = 1:length(results)
         lme0(:,j) = -0.5*(results(j).bic - results(j).K*log(2*pi));
         for s = 1:length(results(j).H); h(s,1) = log(det(results(j).H{s})); end
@@ -38,6 +41,7 @@ function bms_results = mfit_bms(results)
     if any(ix)
         lme(ix) = lme0(ix);
     end
+    if use_bic==1; lme = lme0; end
 
     lme(any(isnan(lme)|isinf(lme),2),:) = [];
     

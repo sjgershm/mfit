@@ -49,12 +49,13 @@ function results = mfit_optimize(likfun,param,data,nstarts)
             for k = 1:K
                 x0(k) = unifrnd(param(k).lb,param(k).ub);
             end
-            [x,nlogp,~,~,~,~,H] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
+            [x,nlogp] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
             logp = -nlogp;
             if i == 1 || results.logpost(s) < logp
                 results.logpost(s) = logp;
                 results.loglik(s) = likfun(x,data(s));
                 results.x(s,:) = x;
+                [~,~,~,~,~,H] = fminunc(f,x,optimset('Display','off','MaxIter',0));
                 results.H{s} = H;
             end
         end
