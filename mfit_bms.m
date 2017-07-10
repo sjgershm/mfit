@@ -32,13 +32,13 @@ function bms_results = mfit_bms(results,use_bic)
     if nargin < 2; use_bic = 0; end
     
     for j = 1:length(results)
-        lme0(:,j) = -0.5*(results(j).bic - results(j).K*log(2*pi));
+        lme0(:,j) = -0.5*results(j).bic;
         for s = 1:length(results(j).H); h(s,1) = log(det(results(j).H{s})); end
         lme(:,j) = results(j).logpost' + 0.5*(results(j).K*log(2*pi) - h);
     end
     
-    ix = isnan(lme)|isinf(lme)|~isreal(lme); % use BIC if Hessian is degenerate
-    if any(ix)
+    ix = isnan(lme)|isinf(lme)|imag(lme)~=0; % use BIC if Hessian is degenerate
+    if any(ix(:))
         lme(ix) = lme0(ix);
     end
     if use_bic==1; lme = lme0; end
