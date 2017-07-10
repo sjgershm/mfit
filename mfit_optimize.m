@@ -20,7 +20,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     %               .H - [S x 1] cell array of Hessian matrices
     %               .latents - latent variables (only if likfun returns a second argument)
     %
-    % Sam Gershman, June 2015
+    % Sam Gershman, July 2017
     
     % fill in missing options
     if nargin < 4 || isempty(nstarts); nstarts = 5; end
@@ -55,8 +55,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
                 results.logpost(s) = logp;
                 results.loglik(s) = likfun(x,data(s));
                 results.x(s,:) = x;
-                [~,~,~,~,~,H] = fminunc(f,x,optimset('Display','off','MaxIter',0));
-                results.H{s} = H;
+                results.H{s} = NumHessian(f,x);
             end
         end
         
