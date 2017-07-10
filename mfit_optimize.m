@@ -61,5 +61,9 @@ function results = mfit_optimize(likfun,param,data,nstarts)
         
         results.bic(s,1) = K*log(data(s).N) - 2*results.loglik(s);
         results.aic(s,1) = K*2 - 2*results.loglik(s);
-        try [~,results.latents(s)] = likfun(results.x(s,:),data(s)); end
+        try
+            [~,results.latents(s)] = likfun(results.x(s,:),data(s));
+        catch
+            results.latents = [];
+        end
     end
