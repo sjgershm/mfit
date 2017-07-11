@@ -37,9 +37,9 @@ function bms_results = mfit_bms(results,use_bic)
         lme(:,j) = results(j).logpost' + 0.5*(results(j).K*log(2*pi) - h);
     end
     
-    ix = isnan(lme)|isinf(lme)|imag(lme)~=0; % use BIC if Hessian is degenerate
+    ix = isnan(lme)|isinf(lme)|imag(lme)~=0; % use BIC if any Hessians are degenerate
     if any(ix(:))
-        lme(ix) = lme0(ix);
+        lme = lme0;
     end
     if use_bic==1; lme = lme0; end
 
