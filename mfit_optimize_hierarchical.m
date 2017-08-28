@@ -53,7 +53,7 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
         % M-step: update group-level parameters
         v = zeros(1,K);
         for s = 1:S
-            v = v + results.x(s,:).^2 + diag(inv(results.H{s}))';
+            v = v + results.x(s,:).^2 + diag(pinv(results.H{s}))';
             h = log(det(results.H{s}));
             if ~isreal(h)
                 L(s) = -0.5*results.bic(s);
