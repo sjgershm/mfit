@@ -65,7 +65,7 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
         v = max(1e-5,v./S - m.^2);
         ix = isnan(v); v(ix) = nanvar(results.x(:,ix)); % default behavior if there are nans
         lme(iter) = sum(L) - K*log(sum([data.N]));
-        results.lme = lme(iter);
+        results.lme(iter) = lme(iter);
         results.group.m = m;
         results.group.v = v;
         
