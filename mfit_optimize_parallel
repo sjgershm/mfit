@@ -38,7 +38,7 @@ lb = [param.lb];
 ub = [param.ub];
 
 % preallocate
-[logpost, loglik, bic, aic, latents] = deal(nan(S, 1));
+[logpost, loglik, bic, aic] = deal(nan(S, 1));
 [x_out] = nan(S, K);
 [H] = cell(S, 1);
 
@@ -69,10 +69,7 @@ parfor s = 1:S
     
     bic(s) = K*log(data(s).N) - 2*loglik(s);
     aic(s) = K*2 - 2*loglik(s);
-    
-    if nargout(likfun)>1
-        [~,latents(s)] = likfun(x_out(s,:),data(s));
-    end
+  
 end
 
 % save
@@ -80,6 +77,14 @@ results.logpost = logpost';
 results.loglik = loglik;
 results.bic = bic;
 results.aic = aic;
-if any(~isnan(latents)); results.latents = latents; end
 results.x = x_out;
 results.H = H;
+
+% if likfun returns a 2nd argument, save latent variables
+try
+    for s = 1:S
+        [~, results.latents(s)] = likfun(x_out(s,:),data(s));
+    end
+catch
+    results.latents = [];
+end
