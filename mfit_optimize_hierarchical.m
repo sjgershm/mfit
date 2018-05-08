@@ -1,4 +1,4 @@
-function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
+function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel)
     
     % Hierarchical maximum a posteriori parameter estimates, automatically
     % estimating the group-level prior.
@@ -9,7 +9,8 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
     %   likfun - likelihood function handle
     %   param - [K x 1] parameter structure
     %   data - [S x 1] data structure
-    %   nstarts (optional) - number of random starts (default: 1)
+    %   nstarts  (optional) - number of random starts    (default: 1)
+    %   parallel (optional) - use mfit_optimize_parallel (default: 0)
     %
     % OUTPUTS:
     %   results - structure with the following fields:
@@ -26,6 +27,8 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
     % Sam Gershman, July 2017
     
     if nargin < 4; nstarts = 1; end
+    if nargin < 5; parallel= 0; end
+
     
     % initialization
     tol = 1e-3;
@@ -48,7 +51,11 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts)
         end
         
         % E-step: find individual parameter estimates
-        results = mfit_optimize(likfun,param,data,nstarts);
+        if parallel
+            results = mfit_optimize_parallel(likfun,param,data,nstarts);
+        else
+            results = mfit_optimize(likfun,param,data,nstarts);
+        end
         
         % M-step: update group-level parameters
         v = zeros(1,K);
