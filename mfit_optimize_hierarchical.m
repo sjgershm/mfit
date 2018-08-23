@@ -2,6 +2,7 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
     
     % Hierarchical maximum a posteriori parameter estimates, automatically
     % estimating the group-level prior.
+    % See Huys et al. (2011) PLOS CB
     %
     % USAGE: results = mfit_optimize(likfun,param,data,[nstarts])
     %
