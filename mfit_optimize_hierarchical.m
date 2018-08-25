@@ -38,6 +38,13 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
     S = length(data);
     m = randn(1,K);
     v = ones(1,K)*100;
+
+    % identity link function is default
+    if ~isfield(param, 'link')
+        for k = 1:K
+            param(k).link = @(x) x;
+        end
+    end
     
     % run expectation-maximization
     while iter < maxiter
@@ -47,7 +54,7 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
         
         % construct prior
         for k = 1:K
-            param(k).logpdf = @(x) -0.5 * ((x - m(k))./sqrt(v(k))).^2 - log((sqrt(2*pi) .* sqrt(v(k))));
+            param(k).logpdf = @(x) -0.5 * ((param(k).link(x) - m(k))./sqrt(v(k))).^2 - log((sqrt(2*pi) .* sqrt(v(k))));
         end
         
         % E-step: find individual parameter estimates
@@ -55,6 +62,12 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
             results = mfit_optimize_parallel(likfun,param,data,nstarts);
         else
             results = mfit_optimize(likfun,param,data,nstarts);
+        end
+
+        % transform parameters to (-inf, +inf)
+        x_orig = results.x;
+        for k = 1:K
+            results.x(:,k) = param(k).link(results.x(:,k));
         end
         
         % M-step: update group-level parameters
@@ -75,6 +88,7 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
         results.group.m = m;
         results.group.v = v;
         results.lme = lme;
+        results.x = x_orig;
         
         if iter > 1 && abs(lme(iter)-lme(iter-1))<tol
             break;
