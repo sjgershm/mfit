@@ -18,6 +18,7 @@ function bms_results = mfit_bms(results,use_bic)
     %       .xp      - exceedance probabilities
     %       .pxp     - protected exceedance probabilities
     %       .bor     - Bayes Omnibus Risk (probability that model frequencies are equal)
+    %       .g       - posterior belief g(i,k)=q(m_i=k|y_i) that model k generated the data for the i-th subject
     %
     % REFERENCES:
     %   Stephan KE, Penny WD, Daunizeau J, Moran RJ, Friston KJ (2009)
@@ -45,4 +46,4 @@ function bms_results = mfit_bms(results,use_bic)
 
     lme(any(isnan(lme)|isinf(lme),2),:) = [];
     
-    [bms_results.alpha, bms_results.exp_r, bms_results.xp, bms_results.pxp, bms_results.bor] = bms(lme);
+    [bms_results.alpha, bms_results.exp_r, bms_results.xp, bms_results.pxp, bms_results.bor, bms_results.g] = bms(lme);
