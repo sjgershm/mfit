@@ -1,4 +1,4 @@
-function [alpha,exp_r,xp,pxp,bor] = bms(lme)
+function [alpha,exp_r,xp,pxp,bor,g] = bms(lme)
     
     % Bayesian model selection for group studies.
     %
@@ -16,6 +16,8 @@ function [alpha,exp_r,xp,pxp,bor] = bms(lme)
     %   pxp     - protected exceedance probabilities
     %   bor     - Bayes Omnibus Risk (probability that model frequencies
     %           are equal)
+    %   g       - posterior belief g(i,k)=q(m_i=k|y_i) that model k generated
+    %           the data for the i-th subject
     %
     % REFERENCES:
     %
