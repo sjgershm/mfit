@@ -47,7 +47,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
         for i = 1:nstarts
             if all(isinf(lb)) && all(isinf(ub))
                 x0 = randn(1,K);
-                [x,nlogp] = fminunc(f,x0);
+                [x,nlogp] = fminunc(f,x0,options);
             else
                 x0 = zeros(1,K);
                 for k = 1:K
