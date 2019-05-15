@@ -32,11 +32,13 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     results.likfun = likfun;
     
     % extract lower and upper bounds
-    lb = [param.lb];
-    ub = [param.ub];
+    if ~isfield(param,'lb'); lb = zeros(size(param)) + -inf; else lb = [param.lb]; end
+    if ~isfield(param,'ub'); ub = zeros(size(param)) + inf; else ub = [param.ub]; end
     
     options = optimset('Display','off');
     warning off all
+    
+    if isfield(param,'x0'); nstarts = length(param(1).x0); end
     
     for s = 1:length(data)
         disp(['Subject ',num2str(s)]);
@@ -46,12 +48,24 @@ function results = mfit_optimize(likfun,param,data,nstarts)
         
         for i = 1:nstarts
             if all(isinf(lb)) && all(isinf(ub))
-                x0 = randn(1,K);
+                if isfield(param,'x0')
+                    for j = 1:length(param)
+                        x0(j) = param(j).x0(i);
+                    end
+                else
+                    x0 = randn(1,K);
+                end
                 [x,nlogp] = fminunc(f,x0,options);
             else
-                x0 = zeros(1,K);
-                for k = 1:K
-                    x0(k) = unifrnd(param(k).lb,param(k).ub);
+                if isfield(param,'x0')
+                    for j = 1:length(param)
+                        x0(j) = param(j).x0(i);
+                    end
+                else
+                    x0 = zeros(1,K);
+                    for k = 1:K
+                        x0(k) = unifrnd(param(k).lb,param(k).ub);
+                    end
                 end
                 [x,nlogp] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
             end

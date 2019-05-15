@@ -36,8 +36,19 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
     iter = 0;
     K = length(param);
     S = length(data);
-    m = randn(1,K);
-    v = ones(1,K)*100;
+    
+    % extract lower and upper bounds
+    if ~isfield(param,'lb'); lb = zeros(size(param)) + -inf; else lb = [param.lb]; end
+    if ~isfield(param,'ub'); ub = zeros(size(param)) + inf; else ub = [param.ub]; end
+    
+    % group-level initial parameters
+    if all(isinf(lb)) && all(isinf(ub))
+        m = randn(1,K);
+        v = ones(1,K)*100;
+    else
+        m = ub + 0.5*(ub-lb);
+        v = ub-lb;
+    end
 
     % identity link function is default
     if ~isfield(param, 'link')
@@ -74,16 +85,11 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
         v = zeros(1,K);
         for s = 1:S
             v = v + results.x(s,:).^2 + diag(pinv(results.H{s}))';
-            h = log(det(results.H{s}));
-            if ~isreal(h)
-                L(s) = -0.5*results.bic(s);
-            else
-                L(s) = results.logpost(s) + 0.5*(results.K*log(2*pi) - h);
-            end
+            h = logdet(results.H{s});
+            L(s) = results.logpost(s) + 0.5*(results.K*log(2*pi) - h);
         end
         m = nanmean(results.x);
-        v = max(1e-5,v./S - m.^2);
-        ix = isnan(v); v(ix) = nanvar(results.x(:,ix)); % default behavior if there are nans
+        v = max(1e-5,v./S - m.^2);  % make sure variances don't get too small
         lme(iter) = sum(L) - K*log(sum([data.N]));
         results.group.m = m;
         results.group.v = v;

@@ -17,6 +17,8 @@ function logp = mfit_post(x,param,data,likfun)
 
     logp = likfun(x,data);
     
-    for k = 1:length(param)
-        logp = logp + param(k).logpdf(x(:,k));
+    if isfield(param,'logpdf')
+        for k = 1:length(param)
+            logp = logp + param(k).logpdf(x(:,k));
+        end
     end
