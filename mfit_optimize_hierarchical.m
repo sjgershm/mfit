@@ -87,14 +87,15 @@ function results = mfit_optimize_hierarchical(likfun,param,data,nstarts,parallel
             v = v + results.x(s,:).^2 + diag(pinv(results.H{s}))';
             try
                 h = logdet(results.H{s},'chol');
+                L(s) = results.logpost(s) + 0.5*(results.K*log(2*pi) - h);
             catch
-                h = logdet(results.H{s});
                 warning('Hessian is not positive definite');
+                L(s) = nan;
             end
-            L(s) = results.logpost(s) + 0.5*(results.K*log(2*pi) - h);
         end
         m = nanmean(results.x);
         v = max(1e-5,v./S - m.^2);  % make sure variances don't get too small
+        L(isnan(L)) = mean(L(~isnan(L))); % interpolate to avoid imaginary numbers
         lme(iter) = sum(L) - K*log(sum([data.N]));
         results.group.m = m;
         results.group.v = v;
