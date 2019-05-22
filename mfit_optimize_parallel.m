@@ -42,7 +42,7 @@ function results = mfit_optimize_parallel(likfun,param,data,nstarts)
     [x_out] = nan(S, K);
     [H] = cell(S, 1);
     
-    options = optimset('Display','off');
+    options = optimset('Display','off','MaxFunctionEvaluations',2000);
     warning off all
     
     parfor s = 1:S
@@ -55,20 +55,20 @@ function results = mfit_optimize_parallel(likfun,param,data,nstarts)
         for i = 1:nstarts
             if all(isinf(lb)) && all(isinf(ub))
                 x0 = randn(1,K);
-                [x,nlogp] = fminunc(f,x0);
+                [x,nlogp,~,~,~,h] = fminunc(f,x0,options);
             else
                 x0 = zeros(1,K);
                 for k = 1:K
                     x0(k) = unifrnd(param(k).lb,param(k).ub);
                 end
-                [x,nlogp] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
+                [x,nlogp,~,~,~,~,h] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
             end
             logp = -nlogp;
             if i == 1 || logpost(s) < logp
                 logpost(s) = logp;
                 loglik(s) = likfun(x,data(s));
                 x_out(s,:) = x;
-                H{s} = NumHessian(f,x);
+                H{s} = h;
             end
         end
         
@@ -83,7 +83,6 @@ function results = mfit_optimize_parallel(likfun,param,data,nstarts)
     results.bic = bic;
     results.aic = aic;
     results.x = x_out;
-    results.H = H;
     
     % if likfun returns a 2nd argument, save latent variables
     try

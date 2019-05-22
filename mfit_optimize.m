@@ -35,7 +35,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     if ~isfield(param,'lb'); lb = zeros(size(param)) + -inf; else lb = [param.lb]; end
     if ~isfield(param,'ub'); ub = zeros(size(param)) + inf; else ub = [param.ub]; end
     
-    options = optimset('Display','off');
+    options = optimset('Display','off','MaxFunctionEvaluations',2000);
     warning off all
     
     if isfield(param,'x0'); nstarts = length(param(1).x0); end
@@ -55,7 +55,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
                 else
                     x0 = randn(1,K);
                 end
-                [x,nlogp] = fminunc(f,x0,options);
+                [x,nlogp,~,~,~,H] = fminunc(f,x0,options);
             else
                 if isfield(param,'x0')
                     for j = 1:length(param)
@@ -67,14 +67,14 @@ function results = mfit_optimize(likfun,param,data,nstarts)
                         x0(k) = unifrnd(param(k).lb,param(k).ub);
                     end
                 end
-                [x,nlogp] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
+                [x,nlogp,~,~,~,~,H] = fmincon(f,x0,[],[],[],[],lb,ub,[],options);
             end
             logp = -nlogp;
             if i == 1 || results.logpost(s) < logp
                 results.logpost(s) = logp;
                 results.loglik(s) = likfun(x,data(s));
                 results.x(s,:) = x;
-                results.H{s} = NumHessian(f,x);
+                results.H{s} = H;
             end
         end
         
