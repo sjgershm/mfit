@@ -83,6 +83,7 @@ function results = mfit_optimize_parallel(likfun,param,data,nstarts)
     results.bic = bic;
     results.aic = aic;
     results.x = x_out;
+    results.H = H;
     
     % if likfun returns a 2nd argument, save latent variables
     try
