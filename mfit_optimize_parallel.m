@@ -42,7 +42,7 @@ function results = mfit_optimize_parallel(likfun,param,data,nstarts)
     [x_out] = nan(S, K);
     [H] = cell(S, 1);
     
-    options = optimset('Display','off','MaxFunctionEvaluations',2000);
+    options = optimset('Display','off','MaxFunEvals',2000);
     warning off all
     
     parfor s = 1:S

@@ -35,7 +35,7 @@ function results = mfit_optimize(likfun,param,data,nstarts)
     if ~isfield(param,'lb'); lb = zeros(size(param)) + -inf; else lb = [param.lb]; end
     if ~isfield(param,'ub'); ub = zeros(size(param)) + inf; else ub = [param.ub]; end
     
-    options = optimset('Display','off','MaxFunctionEvaluations',2000);
+    options = optimset('Display','off','MaxFunEvals',2000);
     warning off all
     
     if isfield(param,'x0'); nstarts = length(param(1).x0); end
